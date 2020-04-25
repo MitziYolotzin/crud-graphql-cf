@@ -16,6 +16,8 @@ const schema = buildSchema(`
 
     type Query{
         getCourses: [Course]
+        getCourse(id: ID!): Course
+
 
     }
 `);
@@ -25,14 +27,21 @@ const schema = buildSchema(`
 const root = {
     getCourses() {
         return courses;
+    },
+    getCourse({ id }) {
+        console.log(id);
+        //when function return true, return value, when match find id
+        return courses.find((course) => id == course.id);
+
     }
 }
 
 app.get('/', function(req, res) {
-    res.send("Hello");
+    res.json(courses);
 });
 
 //middleware
+//serv on the server
 app.use('/graphql', graphqlHTTP({
     schema,
     rootValue: root, //works as initial value to res, of any query(consulta) in graphql
