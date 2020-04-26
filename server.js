@@ -22,6 +22,7 @@ const schema = buildSchema(`
 
     type Mutation {
         addCourse(title: String!, views: Int): Course
+        updateCourse(id: ID!, title: String!, views: Int): Course
     }
 `);
 //type Query, all the queries we can make are declared to server in graphql
@@ -42,6 +43,17 @@ const root = {
         courses.push(course);
         return course;
 
+    },
+    updateCourse({ id, title, views }) {
+        //send function, execute for each element in array, send element as argument 
+        //return true, position, when they are the same id, receive the item´s position to update 
+        const courseIndex = courses.findIndex((course) => id === course.id);
+        const course = courses[courseIndex];
+        //save in a new variable, and construct new obj with value of element, and additional values they modify
+        const newCourse = Object.assign(course, { title, views });
+        course[courseIndex] = newCourse;
+
+        return newCourse;
     }
 }
 
