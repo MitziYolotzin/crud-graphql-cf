@@ -2,7 +2,7 @@ const express = require('express');
 const { buildSchema } = require('graphql');
 const graphqlHTTP = require('express-graphql');
 
-const courses = require('./courses');
+let courses = require('./courses');
 
 const app = express();
 
@@ -12,6 +12,10 @@ const schema = buildSchema(`
         id: ID!
         title: String!
         views: Int
+    }
+
+    type Alert {
+        message: String
     }
 
     input CourseInput {
@@ -29,6 +33,7 @@ const schema = buildSchema(`
     type Mutation {
         addCourse(input: CourseInput): Course
         updateCourse(id: ID!, input: CourseInput): Course
+        deleteCourse(id: ID!): Alert
     }
 `);
 //type Query, all the queries we can make are declared to server in graphql
@@ -62,6 +67,15 @@ const root = {
         course[courseIndex] = newCourse;
 
         return newCourse;
+    },
+    deleteCourse({ id }) {
+        //find element
+        //function, if it returns false, the new array, no contains the element
+        courses = courses.filter((course) => course.id != id);
+        return {
+            message: `The course with id ${id} it was removed`
+        }
+
     }
 }
 
