@@ -8,17 +8,20 @@ const app = express();
 
 //schema definition language
 const schema = buildSchema(`
-    type Course{
+    type Course {
         id: ID!
         title: String!
         views: Int
     }
 
-    type Query{
+    type Query {
         getCourses: [Course]
         getCourse(id: ID!): Course
 
+    }
 
+    type Mutation {
+        addCourse(title: String!, views: Int): Course
     }
 `);
 //type Query, all the queries we can make are declared to server in graphql
@@ -32,6 +35,12 @@ const root = {
         console.log(id);
         //when function return true, return value, when match find id
         return courses.find((course) => id == course.id);
+    },
+    addCourse({ title, views }) {
+        const id = String(courses.length + 1);
+        const course = { id, title, views };
+        courses.push(course);
+        return course;
 
     }
 }
