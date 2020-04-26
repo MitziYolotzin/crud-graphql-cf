@@ -25,7 +25,7 @@ const schema = buildSchema(`
 
 
     type Query {
-        getCourses: [Course]
+        getCourses(page: Int, limit: Int = 1): [Course]
         getCourse(id: ID!): Course
 
     }
@@ -40,7 +40,13 @@ const schema = buildSchema(`
 
 //obj with functions, queries indicating that it returns
 const root = {
-    getCourses() {
+    getCourses({ page, limit }) {
+        //if haven´t int page, return courses
+        if (page !== undefined) {
+            return courses.slice(page * limit, (page + 1) * limit);
+            //init in 0
+            //return courses.slice((page-1) * limit, (page) * limit);
+        }
         return courses;
     },
     getCourse({ id }) {
