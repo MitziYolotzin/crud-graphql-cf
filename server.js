@@ -14,6 +14,12 @@ const schema = buildSchema(`
         views: Int
     }
 
+    input CourseInput {
+        title: String!
+        views: Int
+    }
+
+
     type Query {
         getCourses: [Course]
         getCourse(id: ID!): Course
@@ -21,8 +27,8 @@ const schema = buildSchema(`
     }
 
     type Mutation {
-        addCourse(title: String!, views: Int): Course
-        updateCourse(id: ID!, title: String!, views: Int): Course
+        addCourse(input: CourseInput): Course
+        updateCourse(id: ID!, input: CourseInput): Course
     }
 `);
 //type Query, all the queries we can make are declared to server in graphql
@@ -37,20 +43,22 @@ const root = {
         //when function return true, return value, when match find id
         return courses.find((course) => id == course.id);
     },
-    addCourse({ title, views }) {
+    addCourse({ input }) {
+        //receive
+        //const { title, views } = input;
         const id = String(courses.length + 1);
-        const course = { id, title, views };
+        const course = { id, ...input }; //spread operator, extract properties and combine with first obj
         courses.push(course);
         return course;
 
     },
-    updateCourse({ id, title, views }) {
+    updateCourse({ id, input }) {
         //send function, execute for each element in array, send element as argument 
         //return true, position, when they are the same id, receive the item´s position to update 
         const courseIndex = courses.findIndex((course) => id === course.id);
         const course = courses[courseIndex];
         //save in a new variable, and construct new obj with value of element, and additional values they modify
-        const newCourse = Object.assign(course, { title, views });
+        const newCourse = Object.assign(course, input);
         course[courseIndex] = newCourse;
 
         return newCourse;
