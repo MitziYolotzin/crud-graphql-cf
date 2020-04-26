@@ -1,1 +1,1 @@
-Learning to do a basic CRUD GraphQL, Express, Apollo Server 
+Learning to do a basic CRUD GraphQL, Express
